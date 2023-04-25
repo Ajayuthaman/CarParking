@@ -41,4 +41,5 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene("FreeRide");
     }
+    //git check
 }
