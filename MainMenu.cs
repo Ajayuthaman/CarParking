@@ -8,6 +8,7 @@ public class MainMenu : MonoBehaviour
     public GameObject exitePanel;
     public GameObject mainMenuPanel;
     public GameObject selectionpanel;
+    
 
     public void Exit()
     {
@@ -41,5 +42,5 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene("FreeRide");
     }
-    //git check
+   
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Parking : MonoBehaviour
 {
@@ -19,7 +20,9 @@ public class Parking : MonoBehaviour
     public GameObject newPostion;
     public GameObject level;
     public GameObject nextLevel;
-    public GameObject ParkingInfo;
+    public GameObject parkingInfo;
+    public Button parkingButton;
+
 
     private void Update()
     {
@@ -27,7 +30,7 @@ public class Parking : MonoBehaviour
         {
             if (isCollideWithTarget && isCollideWithTarget2)
             {
-                ParkingInfo.SetActive(true);
+                parkingInfo.SetActive(true);
                 Material material = parkCheckRenderer.material;
                 Material material2 = parkCheckRenderer2.material;
 
@@ -35,18 +38,15 @@ public class Parking : MonoBehaviour
                 material.color = greenColor;
                 material2.color = greenColor;
 
-                if (Input.GetKey(KeyCode.P))
+                if (parkingButton.interactable)
                 {
-                    level.SetActive(false);
-                    nextLevel.SetActive(true);
-                    Vector3 targetPos = newPostion.transform.position;
-                    playerCar.transform.position = targetPos;
+                    parkingButton.onClick.AddListener(OnButtonClick);
                 }
             }
         }
         else
         {
-            ParkingInfo.SetActive(false);
+            parkingInfo.SetActive(false);
             Material material = parkCheckRenderer.material;
             Material material2 = parkCheckRenderer2.material;
 
@@ -55,5 +55,13 @@ public class Parking : MonoBehaviour
             material2.color = redColor;
 
         } 
+    }
+
+    public void OnButtonClick()
+    {
+        level.SetActive(false);
+        nextLevel.SetActive(true);
+        Vector3 targetPos = newPostion.transform.position;
+        playerCar.transform.position = targetPos;
     }
 }

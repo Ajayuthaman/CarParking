@@ -8,26 +8,41 @@ public class GameManager : MonoBehaviour
 {
     
     public GameObject pauseMenu;
+    public GameObject carControll;
     public GameObject level1;
+    public GameObject winningMenu;
+    public GameObject parkingButton;
+    public GameObject levelFail;
+
+    private void Update()
+    {
+        if (winningMenu.activeInHierarchy)
+        {
+            carControll.SetActive(false);
+            parkingButton.SetActive(false);
+        }
+    }
 
     public void LevelPause()
     {
+        carControll.SetActive(false);
         pauseMenu.SetActive(true);
         Time.timeScale = 0;
     }
 
     public void Resume()
     {
+        carControll.SetActive(true);
         pauseMenu.SetActive(false);
         Time.timeScale = 1;
     }
 
     public void Restart()
-    {
-        Time.timeScale = 1;
-        level1.SetActive(true);
+    {       
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Time.timeScale = 1;
     }
+
 
     public void Home()
     {
@@ -35,4 +50,10 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
+    public void LevelFail()
+    {
+        carControll.SetActive(false);
+        levelFail.SetActive(true);
+        Time.timeScale = 0;        
+    }
 }

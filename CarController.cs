@@ -18,8 +18,8 @@ public class CarController : MonoBehaviour
 
     [Header("Car Engine")]
     public float accelerationForce = 300f;
-    public float breakForce = 50f;
-    public float presentBreakForce = 0f;
+    public float brakeForce = 50f;
+    public float presentBrakeForce = 0f;
     public float presentAcceleration = 0f;
 
     [Header("Car Steering")]
@@ -29,31 +29,43 @@ public class CarController : MonoBehaviour
     [Header("Extras")]
     public GameObject headLight;
     public GameObject line;
+    public Animator acceAnim;
+    public Animator brakeAnim;
 
     private void Update()
     {
         MoveCar();
         CarSteering();
-        ApplyBreak();
         HeadLight();
     }
 
 
     private void MoveCar()
     {
-        presentAcceleration = accelerationForce * Input.GetAxis("Vertical");
+        presentAcceleration = accelerationForce * SimpleInput.GetAxis("Vertical");
 
         frontLeftWheelCollider.motorTorque = presentAcceleration;
         frontRightWheelCollider.motorTorque = presentAcceleration;
         backLeftWheelCollider.motorTorque = presentAcceleration;
         backRightWheelCollider.motorTorque = presentAcceleration;
 
-        
+        if (presentAcceleration > 0)
+        {
+            acceAnim.SetBool("Accelerate",true);
+            brakeAnim.SetBool("Brake", false);
+        }
+        else if(presentAcceleration < 0)
+        {
+            acceAnim.SetBool("Accelerate", false);
+            brakeAnim.SetBool("Brake", true);
+
+        }
+
     }
 
     private void CarSteering()
     {
-        presentTurnAngle = wheelsTorque *Input.GetAxis("Horizontal");
+        presentTurnAngle = wheelsTorque * SimpleInput.GetAxis("Horizontal");
 
         frontLeftWheelCollider.steerAngle = presentTurnAngle;
         frontRightWheelCollider.steerAngle = presentTurnAngle;
@@ -78,29 +90,29 @@ public class CarController : MonoBehaviour
 
     public void ApplyBreak()
     {
-        if (Input.GetKey(KeyCode.Space))
-        {
-            presentBreakForce = breakForce;
 
-            frontLeftWheelCollider.brakeTorque = 300 * presentBreakForce;
-            frontRightWheelCollider.brakeTorque = 300 * presentBreakForce ;
-            backLeftWheelCollider.brakeTorque = 300 * presentBreakForce ;
-            backRightWheelCollider.brakeTorque = 300 * presentBreakForce ;
+        StartCoroutine(CarBrake());
+    }
 
-            line.SetActive(true);
-            StartCoroutine(DeactivateLineAfterDelay(2f));
-        }
-        else
-        {
-            presentBreakForce = 0f;
+    IEnumerator CarBrake()
+    {
+        presentBrakeForce = brakeForce;
 
-            frontLeftWheelCollider.brakeTorque = 0f;
-            frontRightWheelCollider.brakeTorque = 0f;
-            backLeftWheelCollider.brakeTorque = 0f;
-            backRightWheelCollider.brakeTorque = 0f;
-            
-        }
-  
+        frontLeftWheelCollider.brakeTorque = 300 * presentBrakeForce;
+        frontRightWheelCollider.brakeTorque = 300 * presentBrakeForce;
+        backLeftWheelCollider.brakeTorque = 300 * presentBrakeForce;
+        backRightWheelCollider.brakeTorque = 300 * presentBrakeForce;
+
+        line.SetActive(true);
+        StartCoroutine(DeactivateLineAfterDelay(2f));
+        yield return new WaitForSeconds(1f);
+
+        presentBrakeForce = 0f;
+        frontLeftWheelCollider.brakeTorque = 0f;
+        frontRightWheelCollider.brakeTorque = 0f;
+        backLeftWheelCollider.brakeTorque = 0f;
+        backRightWheelCollider.brakeTorque = 0f;
+
     }
 
     IEnumerator DeactivateLineAfterDelay(float delay)
